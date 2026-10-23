@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ROBO CTRL</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#131b2e;--panel2:#1b2740;--line:#293753;--text:#eef4ff;--muted:#9aaac5;--cyan:#61d9f5;--green:#51e0a0;--red:#ff647c;--amber:#ffc76b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#152440 0%,var(--bg) 55%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:1050px;margin:0 auto;padding:24px 16px 32px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#61d9f5,#4a78ff);display:grid;place-items:center;color:#081121;font-size:23px;font-weight:900;box-shadow:0 8px 30px #2475b544}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--cyan);font-weight:800}.brand h1{font-size:23px;letter-spacing:.06em;margin:2px 0 0}.status{display:flex;align-items:center;gap:8px;padding:10px 13px;background:#131d30;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:13px}.dot{width:8px;height:8px;background:#7b879b;border-radius:50%}.dot.ok{background:var(--green);box-shadow:0 0 12px #51e0a088}.dot.bad{background:var(--red)}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.panel{background:linear-gradient(180deg,#151f34ee,#10182aee);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 18px 50px #0002}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:#b5c6e3;margin:0}.tag{font-size:11px;color:var(--cyan);border:1px solid #326277;background:#102a3b;padding:6px 9px;border-radius:999px}
+.pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,94px);gap:10px;max-width:410px;margin:0 auto}.move{border:1px solid #344766;background:linear-gradient(160deg,#263650,#17243a);border-radius:19px;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:inherit;font-weight:750;touch-action:none;user-select:none;cursor:pointer;transition:transform .08s,border-color .08s,background .08s;box-shadow:inset 0 1px #ffffff0b,0 6px 16px #0002}.move .arrow{font-size:30px;line-height:1}.move small{font-size:10px;letter-spacing:.12em;color:#b6c7e1}.move:active,.move.active{transform:scale(.97);border-color:var(--cyan);background:linear-gradient(160deg,#1d5068,#1a3150);box-shadow:0 0 0 2px #61d9f522}.empty{visibility:hidden}.stop{background:linear-gradient(145deg,#a92d48,#6d1d37);border-color:#db536b}.stop small{color:#ffe1e7}.pad-note{text-align:center;color:var(--muted);font-size:12px;margin:15px 0 0}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{border:1px solid var(--line);border-radius:16px;padding:15px;background:#0d1525}.metric label{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px}.value{font-size:28px;font-weight:800;letter-spacing:-.04em}.unit{font-size:13px;color:var(--muted);font-weight:600}.sensorbar{height:6px;border-radius:99px;background:#27354d;overflow:hidden;margin-top:12px}.sensorbar span{display:block;height:100%;width:0;background:var(--green);transition:width .2s,background .2s}.row{display:flex;gap:9px;align-items:center}.btn{border:1px solid var(--line);background:#202d44;color:var(--text);padding:10px 13px;border-radius:12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.btn:hover{border-color:#5d789f}.btn.primary{background:#12394a;border-color:#276477;color:#a6efff}.connect-row{display:flex;gap:8px;margin-top:14px}.connect-row .btn{flex:1}.log{margin-top:16px;border:1px solid var(--line);border-radius:15px;background:#0a1120;padding:12px;height:125px;overflow:auto;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#b9c9e4}.log .good{color:var(--green)}.log .warn{color:var(--amber)}.log .err{color:var(--red)}.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:18px 0 8px}.keycaps{display:flex;flex-wrap:wrap;gap:6px}.key{padding:5px 8px;border:1px solid #35435c;border-radius:7px;background:#172238;color:#dbe7fb;font:11px ui-monospace,monospace}.footer{margin-top:16px;text-align:center;color:#7f91ae;font-size:11px;line-height:1.6}.safety{color:#ffc76b}
+@media(max-width:760px){.wrap{padding:16px 12px 24px}.layout{grid-template-columns:1fr}.top{align-items:flex-start}.brand h1{font-size:20px}.status{font-size:11px;padding:8px 10px}.panel{padding:16px}.pad{grid-template-rows:repeat(3,82px);gap:8px}.value{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">R</div><div><div class="eyebrow">BLUETOOTH ROBOT REMOTE</div><h1>ROBO CTRL</h1></div></div>
+    <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Connecting to local bridge…</span></div>
+  </header>
+  <main class="layout">
+    <section class="panel">
+      <div class="panel-head"><h2>Drive control</h2><span class="tag">HOLD TO MOVE</span></div>
+      <div class="pad" aria-label="Directional controls">
+        <div class="empty"></div>
+        <button class="move" data-command="U" aria-label="Forward"><span class="arrow">↑</span><small>FORWARD</small></button>
+        <div class="empty"></div>
+        <button class="move" data-command="L" aria-label="Left"><span class="arrow">←</span><small>LEFT</small></button>
+        <button class="move stop" data-command="S" aria-label="Stop"><span class="arrow">■</span><small>STOP</small></button>
+        <button class="move" data-command="R" aria-label="Right"><span class="arrow">→</span><small>RIGHT</small></button>
+        <div class="empty"></div>
+        <button class="move" data-command="D" aria-label="Backward"><span class="arrow">↓</span><small>BACKWARD</small></button>
+        <div class="empty"></div>
+      </div>
+      <p class="pad-note">Press and hold a direction. Release to stop.</p>
+      <div class="section-label">Keyboard shortcuts</div>
+      <div class="keycaps"><span class="key">↑ / W</span><span class="key">← / A</span><span class="key">↓ / S</span><span class="key">→ / D</span><span class="key">SPACE = STOP</span></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Telemetry</h2><span class="tag">HC-SR04</span></div>
+      <div class="metrics">
+        <div class="metric"><label>Front distance</label><div class="value"><span id="distance">--</span> <span class="unit">cm</span></div><div class="sensorbar"><span id="distanceBar"></span></div></div>
+        <div class="metric"><label>Drive state</label><div class="value" id="driveState" style="font-size:21px">STOPPED</div><div class="unit" id="driveDetail">Waiting for command</div></div>
+      </div>
+      <div class="connect-row"><button id="connectBtn" class="btn primary">Reconnect bridge</button><button id="measureBtn" class="btn">Measure distance</button></div>
+      <div class="section-label">Activity log</div>
+      <div id="log" class="log" role="log" aria-live="polite"><div>ROBO CTRL initialized.</div><div>Waiting for bridge connection…</div></div>
+      <div class="footer"><span class="safety">Safety:</span> test with wheels lifted first. The STOP button sends a stop command; it is not a hardware emergency-stop circuit.</div>
+    </section>
+  </main>
+  <div class="footer">Local-only control · Browser ↔ Python bridge ↔ HC-05 · No cloud connection</div>
+</div>
+<script>
+(() => {
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  const logEl = document.getElementById('log');
+  const distanceEl = document.getElementById('distance');
+  const distanceBar = document.getElementById('distanceBar');
+  const driveState = document.getElementById('driveState');
+  const driveDetail = document.getElementById('driveDetail');
+  const buttons = [...document.querySelectorAll('[data-command]')];
+  let ws = null, activeCommand = null, activeButton = null, reconnectTimer = null;
+  const commandNames = {U:'FORWARD',D:'BACKWARD',L:'LEFT',R:'RIGHT',S:'STOPPED',X:'MEASURING'};
+  function log(message, kind='') {
+    const line = document.createElement('div');
+    if (kind) line.className = kind;
+    line.textContent = `${new Date().toLocaleTimeString()}  ${message}`;
+    logEl.appendChild(line);
+    while (logEl.children.length > 45) logEl.removeChild(logEl.firstChild);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  function setStatus(connected, text) {
+    statusDot.className = 'dot' + (connected ? ' ok' : ' bad');
+    statusText.textContent = text;
+  }
+  function send(command) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) { log('Bridge is not connected; command not sent.', 'err'); return false; }
+    ws.send(JSON.stringify({type:'command', command}));
+    if (command !== 'X') {
+      driveState.textContent = commandNames[command] || command;
+      driveDetail.textContent = command === 'S' ? 'Motors commanded to stop' : 'Command sent over Bluetooth';
+    }
+    return true;
+  }
+  function connect() {
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    clearTimeout(reconnectTimer);
+    const scheme = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${scheme}//${location.host}/ws`);
+    setStatus(false, 'Connecting to bridge…');
+    ws.onopen = () => { setStatus(true, 'Bridge connected'); log('Connected to local bridge.', 'good'); };
+    ws.onmessage = event => {
+      let data;
+      try { data = JSON.parse(event.data); } catch { log(String(event.data)); return; }
+      if (data.type === 'status') {
+        setStatus(!!data.connected, data.message || (data.connected ? 'Bluetooth connected' : 'Bluetooth disconnected'));
+        if (data.message) log(data.message, data.connected ? 'good' : 'warn');
+      } else if (data.type === 'serial') {
+        const line = String(data.line || '').trim();
+        if (!line) return;
+        log(line, /obstacle|reverse/i.test(line) ? 'warn' : '');
+        const match = line.match(/Distance:\s*(-?\d+)\s*cm/i);
+        if (match) {
+          const cm = Number(match[1]);
+          if (cm >= 0) {
+            distanceEl.textContent = cm;
+            distanceBar.style.width = `${Math.max(3, Math.min(100, cm / 30 * 100))}%`;
+            distanceBar.style.background = cm < 3 ? 'var(--red)' : cm < 10 ? 'var(--amber)' : 'var(--green)';
+          } else { distanceEl.textContent = '--'; }
+        }
+        if (/REVERSE COMPLETE|ROBOT STOPPED|STOPPED/i.test(line)) {
+          driveState.textContent = 'STOPPED'; driveDetail.textContent = 'Waiting for command';
+          releaseActive(false);
+        }
+        if (/OBSTACLE DETECTED/i.test(line)) { driveState.textContent = 'OBSTACLE'; driveDetail.textContent = 'Automatic reverse started'; }
+      } else if (data.type === 'error') log(data.message || 'Bridge error', 'err');
+    };
+    ws.onclose = () => { setStatus(false, 'Bridge disconnected'); log('Bridge disconnected; reconnecting…', 'warn'); releaseActive(false); reconnectTimer = setTimeout(connect, 1800); };
+    ws.onerror = () => setStatus(false, 'Cannot reach bridge');
+  }
+  function releaseActive(sendStop=true) {
+    if (activeButton) activeButton.classList.remove('active');
+    activeButton = null; activeCommand = null;
+    if (sendStop) send('S');
+  }
+  function press(button) {
+    const command = button.dataset.command;
+    if (activeCommand === command) return;
+    if (activeCommand && activeCommand !== 'S') send('S');
+    if (activeButton) activeButton.classList.remove('active');
+    activeButton = button; activeCommand = command; button.classList.add('active');
+    send(command);
+  }
+  buttons.forEach(button => {
+    button.addEventListener('pointerdown', event => {
+      event.preventDefault();
+      if (button.dataset.command === 'S') { releaseActive(false); press(button); return; }
+      press(button);
+      try { button.setPointerCapture(event.pointerId); } catch {}
+    });
+    const release = event => {
+      if (button.dataset.command === 'S') { if (activeButton === button) { button.classList.remove('active'); activeButton = null; activeCommand = null; } return; }
+      if (activeButton === button) releaseActive(true);
+    };
+    button.addEventListener('pointerup', release);
+    button.addEventListener('pointercancel', release);
+    button.addEventListener('lostpointercapture', release);
+    button.addEventListener('contextmenu', e => e.preventDefault());
+  });
+  const keyMap = {ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R'};
+  const heldKeys = new Set();
+  window.addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)) return;
+    if (e.code === 'Space') { e.preventDefault(); releaseActive(false); send('S'); driveState.textContent='STOPPED'; return; }
+    const cmd = keyMap[e.key];
+    if (!cmd) return;
+    e.preventDefault();
+    if (!heldKeys.has(e.key)) { heldKeys.add(e.key); const button = buttons.find(b => b.dataset.command === cmd); if (button) press(button); }
+  });
+  window.addEventListener('keyup', e => {
+    if (keyMap[e.key]) { heldKeys.delete(e.key); if (activeCommand && activeCommand !== 'S') releaseActive(true); }
+  });
+  window.addEventListener('blur', () => { heldKeys.clear(); if (activeCommand && activeCommand !== 'S') releaseActive(true); });
+  document.getElementById('connectBtn').addEventListener('click', () => { if (ws) { try { ws.close(); } catch {} } connect(); });
+  document.getElementById('measureBtn').addEventListener('click', () => { send('X'); log('Requested one distance measurement.'); });
+  window.addEventListener('beforeunload', () => { if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify({type:'command',command:'S'})); });
+  connect();
+})();
+</script>
+</body>
+</html>
